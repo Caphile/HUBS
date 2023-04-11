@@ -69,8 +69,10 @@ while 1:
 
             if not os.path.exists(os.path.join('scripts', title)):
                 os.makedirs(os.path.join('scripts', title))
-            for l in langs:
-                getTxt(l , getScript(l))
+            #for l in langs:
+            #    getTxt(l , getScript(l))
+            getTxt(langs[1], getScript(langs[1]))   # 영어만
+
         except:
             print("자막이 없는 영상이거나 잘못된 주소\n")
 
