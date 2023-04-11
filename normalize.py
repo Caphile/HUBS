@@ -2,7 +2,20 @@
 
 import nltk
 from nltk.corpus import stopwords
+import os
 import re
+
+def searchPath(fileName):
+    rootDir = os.getcwd()  # 현재 py와 같은 경로상에 스크립트 놓아야함
+    folders = [folder.path for folder in os.scandir(rootDir) if folder.is_dir()]    # HUBS 폴더의 하위 모든 폴더
+    
+    folderDirs = []
+    fileName = 'script_en.txt'
+    for folderDir in folders:
+        if os.path.exists(f'{folderDir}/{fileName}'):
+            folderDirs.append(folderDir)
+    
+    return folderDirs
 
 def openFile(fileName):
     with open(fileName, 'r') as f:
@@ -26,7 +39,7 @@ class Normalize:    # 정규화 함수
     def __init__(self, text, stopwords):
         self.text = self.stripSCharacter(text)
         self.text = self.removeStopword(self.text, stopwords)
-        self.text = self.lowercase(self.text)
+        #self.text = self.lowercase(self.text)
 
     def stripSCharacter(self, text):        # 특수문자 제거
         return re.sub('[^a-zA-Z0-9\s]', '', text)
@@ -43,9 +56,11 @@ nltk.download('stopwords')
 stopword_list = stopwords.words('english')
 stopword_list.append(addStopwords())
 
-while 1:
-    fName = 'script_en.txt'
-    text = openFile(fName)
+fileName = 'script_en.txt'
+folderDirs = searchPath(fileName)
+
+for folderDir in folderDirs:
+    text = openFile(f'{folderDir}/{fileName}')
 
     newText = []
     for line in text:
@@ -56,6 +71,4 @@ while 1:
         if newLine != []:
             newText.append(newLine)
 
-    saveFile(f'1{fName}', newText)
-
-    break
+    saveFile(f'{folderDir}/(norm){fileName}', newText)
