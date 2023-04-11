@@ -28,10 +28,12 @@ def saveFile(fileName, text):
             f.write(line + '\n')
 
 def addStopwords(): # 불용어 커스텀
-    words = openFile('./Stopwords.txt')
+    words = openFile('./Stopwords.txt') # 소문자만 입력!
 
     ASW = []    # additional stopwords
     for word in words:
+        if len(word) > 2 and word[-1 : ] == '\n':
+            word = word[ : -1]
         ASW.append(word)
     return ASW
 
@@ -46,7 +48,7 @@ class Normalize:    # 정규화 함수
 
     def removeStopword(self, text, SW):     # 불용어 제거
         words = text.split(' ')
-        return ' '.join([word for word in words if word not in SW])
+        return ' '.join([word for word in words if word.lower() not in SW])
 
     def lowercase(self, text):              # 소문자화
         words = text.split(' ')
@@ -54,7 +56,8 @@ class Normalize:    # 정규화 함수
 
 nltk.download('stopwords')
 stopword_list = stopwords.words('english')
-stopword_list.append(addStopwords())
+for stopword in addStopwords():
+    stopword_list.append(stopword)
 
 fileName = 'script_en.txt'
 folderDirs = searchPath(fileName)
