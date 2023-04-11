@@ -72,3 +72,8 @@ for folderDir in folderDirs:
             newText.append(newLine)
 
     saveFile(f'{folderDir}/(norm){fileName}', newText)
+
+    if not os.path.exists('norms'):
+        os.mkdir('norms')
+    fName = folderDir.split('\\')[-1]
+    saveFile(f'norms/{fName}.txt', newText)
