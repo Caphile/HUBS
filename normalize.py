@@ -5,8 +5,8 @@ from nltk.corpus import stopwords
 import os
 import re
 
-def searchPath(fileName):
-    rootDir = os.getcwd()  # 현재 py와 같은 경로상에 스크립트 놓아야함
+def searchPath(fileName):   # 현재 py와 같은 경로상에 스크립트 놓아야함
+    rootDir = f'{os.getcwd()}/scripts'
     folders = [folder.path for folder in os.scandir(rootDir) if folder.is_dir()]    # HUBS 폴더의 하위 모든 폴더
     
     folderDirs = []
