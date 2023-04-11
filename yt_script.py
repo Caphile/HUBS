@@ -13,7 +13,7 @@ def getScript(lang):
     return texts
 
 def getTxt(lang, text):
-    path = title + '/script_' + lang + '.txt'
+    path = f'scripts/{title}/script_{lang}.txt'
     with open(path, 'w', encoding = 'UTF-8') as f:
         for t in text:
             f.write(t+'\n')
@@ -67,10 +67,8 @@ while 1:
                 )
                     '''
 
-            try:
-                os.mkdir(title)
-            except:
-                print("이미 폴더가 있음")
+            if not os.path.exists(os.path.join('scripts', title)):
+                os.makedirs(os.path.join('scripts', title))
             for l in langs:
                 getTxt(l , getScript(l))
         except:
