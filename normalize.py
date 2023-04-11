@@ -46,9 +46,9 @@ class Normalize:    # 정규화 함수
     def stripSCharacter(self, text):        # 특수문자 제거
         return re.sub('[^a-zA-Z0-9\s]', '', text)
 
-    def removeStopword(self, text, SW):     # 불용어 제거
+    def removeStopword(self, text, stopwords):     # 불용어 제거
         words = text.split(' ')
-        return ' '.join([word for word in words if word.lower() not in SW])
+        return ' '.join([word for word in words if word.lower() not in stopwords])
 
     def lowercase(self, text):              # 소문자화
         words = text.split(' ')
