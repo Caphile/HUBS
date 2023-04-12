@@ -18,7 +18,7 @@ def searchPath(fileName):   # 현재 py와 같은 경로상에 스크립트 놓아야함
     return folderDirs
 
 def openFile(fileName):
-    with open(fileName, 'r') as f:
+    with open(fileName, 'r', encoding ='UTF8') as f:
         lines = f.readlines()
     return lines
 
