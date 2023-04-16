@@ -57,7 +57,7 @@ def label(text):
                 print(entity[1], entity[2], " ".join(tokens[entity[1]:entity[2]]))
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertForTokenClassification.from_pretrained('bert-base-uncased', num_labels = 1)
+model = BertForTokenClassification.from_pretrained('bert-base-uncased', num_labels = 3)
 
 filePaths = openFile()
 
