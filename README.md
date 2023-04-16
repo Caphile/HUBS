@@ -1,5 +1,5 @@
 # HUBS
-### 23-1 캡스톤팀 HUBS
+### 23-1 캡스톤 27팀 HUBS
 
 1. crawling
 
