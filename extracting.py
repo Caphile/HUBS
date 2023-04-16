@@ -36,9 +36,11 @@ def label(text):
             entity_start = i
             entity_end = i + 1
             entity_type = label[2:]
+
         elif label.startswith("I-"):
             if entity_type is not None:
                 entity_end = i + 1
+
         elif label.startswith("O"):
             if entity_start is not None:
                 entities.append((entity_type, entity_start, entity_end))

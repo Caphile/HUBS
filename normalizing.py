@@ -10,7 +10,7 @@ def searchPath(fileName):   # 현재 py와 같은 경로상에 스크립트 놓아야함
     folders = [folder.path for folder in os.scandir(rootDir) if folder.is_dir()]    # HUBS 폴더의 하위 모든 폴더
     
     folderDirs = []
-    fileName = 'script_en.txt'
+    fileName = '(res)script_en.txt'
     for folderDir in folders:
         if os.path.exists(f'{folderDir}/{fileName}'):
             folderDirs.append(folderDir)
@@ -63,7 +63,7 @@ fileName = 'script_en.txt'
 folderDirs = searchPath(fileName)
 
 for folderDir in folderDirs:
-    text = openFile(f'{folderDir}/{fileName}')
+    text = openFile(f'{folderDir}/(res){fileName}')
 
     newText = []
     for line in text:

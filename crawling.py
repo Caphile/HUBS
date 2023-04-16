@@ -13,7 +13,7 @@ def getScript(lang):
     return texts
 
 def getTxt(lang, text):
-    path = f'scripts/{title}/script_{lang}.txt'
+    path = f'scripts/{title}/(ori)script_{lang}.txt'
     with open(path, 'w', encoding = 'UTF-8') as f:
         for t in text:
             f.write(t+'\n')
