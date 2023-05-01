@@ -12,3 +12,4 @@ words='\n'.join(lines) #배열된 단어들을 ListedStopw란 메모장에 저�
 file = open("ListedStopw.txt","w")
 file.write(words)
 file.close()
+
