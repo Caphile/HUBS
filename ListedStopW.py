@@ -7,8 +7,8 @@ lines=[line.rstrip('\n') for line in lines]
 lines.sort()      
 
 
-words='\n'.join(lines) #배열된 단어들을 ListedStopw란 메모장에 저장되게함
-file = open("ListedStopw.txt","w")
+words='\n'.join(lines) #배열된 단어들을 Stopwords.txt에 저장되게함
+file = open("Stopwords.txt","w")
 file.write(words)
 file.close()
 
