@@ -13,3 +13,4 @@ file = open("ListedStopw.txt","w")
 file.write(words)
 file.close()
 
+
