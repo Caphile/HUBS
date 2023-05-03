@@ -1,14 +1,15 @@
-fileName = 'Stopwords.txt' #Stopword.txt 파일의 단어들을 나열
+filePath = ''
+fileName = 'Stopwords.txt'
 
 with open(fileName, 'r+') as f:
     lines = f.readlines()
     lines = [line.rstrip('\n') for line in lines]
     while 1:
         stopW = input()
-        if stopW == 'x':
+        if stopW == 'x':    # x 눌러 종료
             break
 
-        if stopW in lines:
+        if stopW in lines:  # 이미 존재하면 삭제
             lines.remove(stopW)
             print(f'{stopW}이 목록에서 삭제됨')
         else:
