@@ -1,3 +1,7 @@
+# 윈도우 콘솔 사용을 상정하여 제작
+# 콘솔을 X키로 눌러 닫으면 저장이 잘 안될 수도 있음
+# 엔터키를 눌러 종료할 것
+
 from colorama import Fore, Style
 import os
 
