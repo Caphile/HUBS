@@ -1,15 +1,22 @@
-file_path='Stopwords.txt' #Stopword.txt 파일의 단어들을 나열
+fileName = 'Stopwords.txt' #Stopword.txt 파일의 단어들을 나열
 
-with open(file_path) as f:
+with open(fileName, 'r+') as f:
     lines = f.readlines()
+    lines = [line.rstrip('\n') for line in lines]
+    while 1:
+        stopW = input()
+        if stopW == 'x':
+            break
 
-lines=[line.rstrip('\n') for line in lines]
-lines.sort()      
+        if stopW in lines:
+            lines.remove(stopW)
+            print(f'{stopW}이 목록에서 삭제됨')
+        else:
+            lines.append(stopW)
+            print(f'{stopW}이 목록에 추가됨')
 
-
-words='\n'.join(lines) #배열된 단어들을 Stopwords.txt에 저장되게함
-file = open("Stopwords.txt","w")
-file.write(words)
-file.close()
-
-
+        lines.sort()    
+        
+        f.seek(0)
+        f.truncate(0)
+        f.write('\n'.join(lines))
