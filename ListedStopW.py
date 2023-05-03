@@ -6,7 +6,7 @@ with open(fileName, 'r+') as f:
     lines = [line.rstrip('\n') for line in lines]
     while 1:
         stopW = input()
-        if stopW == 'x':    # x 눌러 종료
+        if stopW == '':    # enter 눌러 종료
             break
 
         if stopW in lines:  # 이미 존재하면 삭제
