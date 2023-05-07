@@ -13,7 +13,7 @@ def filePaths():
 
     return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
 
-
+'''
 # spaCy 영어 모델 로드
 fp = filePaths()
 nlp = spacy.load('en_core_web_sm')
@@ -39,11 +39,8 @@ for f in fp:
 
         print(item)
 
+'''
 
-
-# 옵티마이저, 모델 아키텍처 선택
-
-# 하이퍼 파라미터 변경
 from spacy.util import minibatch, compounding
 import random
 
@@ -52,47 +49,38 @@ TRAIN_DATA = [
     ("이번에 소개할 제품은 아임미미의 아이섀도우 팔레트입니다.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]}),
 ]
 # 새로운 모델 생성
-#custom_ner = spacy.blank("en")
+nlp = spacy.blank("en")
 #custom_ner.to_disk('custom_model')
+#custom_ner = spacy.load('custom_model')
 
-custom_ner = spacy.load('custom_model')
+ner = nlp.create_pipe('ner')
+nlp.add_pipe(ner)
 
-# 새로운 엔티티 레이블 "PRODUCT"와 "ORG" 등록
-custom_ner = custom_ner.create_pipe("ner")
-custom_ner.add_label("PRODUCT")
-custom_ner.add_label("ORG")
+nlp.add_label("PRODUCT")
+nlp.add_label("ORG")
 
 # 파이프라인 구성
-#custom_ner.add_pipe(custom_ner.create_pipe("ner"))
+optimizer = nlp.entity.create_optimizer()
 
 # 하이퍼파라미터를 설정합니다.
-learn_rate = 0.001  # 학습률
-L2_penalty = 1e-6  # L2 패널티
-momentum = 0.9  # 모멘텀
-dropout = 0.2  # 드롭아웃 비율
-n_iter = 20  # 반복 횟수
+learn_rate = 0.001
+batch_size = 32
+epochs = 10
+dropout = 0.5
 
 # 옵티마이저를 초기화합니다.
-optimizer = custom_ner.begin_training()
+#nlp.begin_training(learn_rate=learn_rate, batch_size=batch_size, epochs=epochs, dropout=dropout)
 
-# 하이퍼파라미터를 설정합니다.
-optimizer.learn_rate = learn_rate
-optimizer.L2_penalty = L2_penalty
-optimizer.momentum = momentum
+other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
+with nlp.disable_pipes(*other_pipes):  # only train NER
+    for itn in range(epochs):
+        random.shuffle(TRAIN_DATA)
+        losses = {}
+        batches = minibatch(TRAIN_DATA, size=compounding(4., 32., 1.001))
+        for batch in batches:
+            texts, annotations = zip(*batch)
+            nlp.update(texts, annotations, sgd=optimizer, drop=0.35,
+                        losses=losses)
+        print('Losses', losses)
 
-# 반복 횟수만큼 학습합니다.
-for i in range(n_iter):
-    # 학습 데이터를 섞습니다.
-    random.shuffle(TRAIN_DATA)
-    
-    # 미니배치를 만들고 학습합니다.
-    losses = {}
-    batches = minibatch(TRAIN_DATA, size=compounding(4.0, 32.0, 1.001))
-    for batch in batches:
-        texts, annotations = zip(*batch)
-        custom_ner.update(texts, annotations, sgd=optimizer, drop=dropout, losses=losses)
-    
-    # 학습 결과를 출력합니다.
-    print("Iteration {} - Loss: {}".format(i + 1, losses["ner"]))
-
-custom_ner.to_disk('custom_model')
+nlp.to_disk('custom_model')
