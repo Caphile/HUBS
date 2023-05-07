@@ -49,38 +49,46 @@ TRAIN_DATA = [
     ("이번에 소개할 제품은 아임미미의 아이섀도우 팔레트입니다.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]}),
 ]
 # 새로운 모델 생성
-nlp = spacy.blank("en")
-#custom_ner.to_disk('custom_model')
+nlp = spacy.blank('en')
+#cust om_ner.to_disk('custom_model')
 #custom_ner = spacy.load('custom_model')
 
-ner = nlp.create_pipe('ner')
-nlp.add_pipe(ner)
+ner = nlp.add_pipe("ner")
 
-nlp.add_label("PRODUCT")
-nlp.add_label("ORG")
+ner.add_label("PRODUCT")
+ner.add_label("ORG")
+
+pipe_exceptions = ["ner", "trf_wordpiecer", "trf_tok2vec"]
+
+unaffected_pipes = [pipe for pipe in nlp.pipe_names if pipe not in pipe_exceptions]
 
 # 파이프라인 구성
-optimizer = nlp.entity.create_optimizer()
+#optimizer = nlp.entity.create_optimizer()
 
 # 하이퍼파라미터를 설정합니다.
-learn_rate = 0.001
-batch_size = 32
+#learn_rate = 0.001
 epochs = 10
-dropout = 0.5
 
 # 옵티마이저를 초기화합니다.
 #nlp.begin_training(learn_rate=learn_rate, batch_size=batch_size, epochs=epochs, dropout=dropout)
 
-other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
-with nlp.disable_pipes(*other_pipes):  # only train NER
-    for itn in range(epochs):
-        random.shuffle(TRAIN_DATA)
-        losses = {}
-        batches = minibatch(TRAIN_DATA, size=compounding(4., 32., 1.001))
-        for batch in batches:
-            texts, annotations = zip(*batch)
-            nlp.update(texts, annotations, sgd=optimizer, drop=0.35,
-                        losses=losses)
-        print('Losses', losses)
+with nlp.disable_pipes(*unaffected_pipes):
+  # Training for 30 iterations
+  for iteration in range(epochs):
+
+    # shuufling examples  before every iteration
+    random.shuffle(TRAIN_DATA)
+    losses = {}
+    # batch up the examples using spaCy's minibatch
+    batches = minibatch(TRAIN_DATA, size = compounding(4.0, 32.0, 1.001)) #시작크기, 최대크기, 증가율
+    for batch in batches:   # 데이터의 묶음
+        texts, annotations = zip(*batch)
+        nlp.update(
+                    texts,  # batch of texts
+                    annotations,  # batch of annotations
+                    drop=0.5,  # dropout - make it harder to memorise data
+                    losses=losses
+                )
+        print("Losses", losses)
 
 nlp.to_disk('custom_model')
