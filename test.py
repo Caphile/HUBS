@@ -1,9 +1,6 @@
 # -*- encoding= cp949 -*-
 
 import spacy
-import torch
-from transformers import BertTokenizer, BertForTokenClassification
-from transformers import AutoTokenizer, AutoModelForTokenClassification
 from tkinter import filedialog, Tk
 import os
 
@@ -13,11 +10,23 @@ def filePaths():
 
     return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
 
-'''
-# spaCy 영어 모델 로드
+def loadModel():
+    print('1. 빈 모델 2. 기존 모델')
+    opt = int(input())
+    if opt == 1:
+        model = spacy.blank('en')
+    elif opt == 2:
+        modelName = 'ner_model' # 추후에 선택 가능하게끔 바꿀 여지 있음
+        try:
+            print('커스텀 모델 사용')
+            model = spacy.load(modelName)
+        except:
+            print('오픈소스로 제공된 학습된 모델 사용')
+            model = spacy.load('en_core_web_sm')
+    return model
+
 fp = filePaths()
-nlp = spacy.load('en_core_web_sm')
-nlp = spacy.load('custom_model')
+nlp = loadModel()
 
 # 유튜브 스크립트에서 추출한 텍스트
 for f in fp:
@@ -25,22 +34,28 @@ for f in fp:
         fullText = f.read()
         lines = fullText.split('\n')
 
-        item = []
-        data = []
+        prod = []
+        desc = []
         for line in lines:
             if line != '':
                 doc = nlp(line)
 
-                a = [ent.text for ent in doc.ents if ent.label_ in ['ORG', 'PRODUCT']]
-                if a != []:
-                    item.append([ent.text for ent in doc.ents if ent.label_ in ['ORG', 'PRODUCT']])
+                for entity in doc.ents:
+                    if entity.label_ == "PRODUCT":
+                        prod.append(entity.text)
 
-                # 출력
+                # 텍스트 분류를 통한 화장품 설명 추출
+                descriptions = []
+                sentences = [sent.text for sent in doc.sents]
+                for sentence in sentences:
+                    sentence_doc = nlp(sentence)
+                    if sentence_doc.cats.get('DESCRIPTION', 0) > 0.5:   # 확률이 n이상인
+                        descriptions.append(sentence)
 
-        print(item)
+        print("화장품 명:", ' '.join(prod))
+        print("화장품 설명:", ' '.join(desc))
 
 '''
-
 from spacy.util import minibatch, compounding
 import random
 
@@ -92,3 +107,5 @@ with nlp.disable_pipes(*unaffected_pipes):
         print("Losses", losses)
 
 nlp.to_disk('custom_model')
+
+'''
