@@ -4,7 +4,16 @@ import spacy
 from tkinter import filedialog, Tk
 import os
 
-modelName = 'ner_model' # 추후에 선택 가능하게끔 바꿀 여지 있음
+modelName = 'ner_model' # 추후에 직접 선택 가능하게끔 바꿀 여지 있음
+
+# hyperparam
+HP = {
+    'dropout'   :   0.5,
+    'minBatch'  :   4.0,
+    'maxBatch'  :   32.0,
+    'learnRate' :   0.01,
+    'epochs'    :   10
+    }
 
 def filePaths():
     root = Tk()
@@ -17,13 +26,12 @@ def loadModel():
     print('2. 기존 모델 사용')
     opt = int(input())
     if opt == 1:
-        model = spacy.blank('en')
-        setModel(model)
+        setModel()
 
     elif opt == 2:
         global modelName
         try:
-            print('커스텀 모델 사용')
+            print('커스텀 모델 사용')  # 모델을 그대로 사용할지, 튜닝 후 사용할지 결정 해야함
             model = spacy.load(modelName)
         except:
             print('오픈소스로 제공된 학습된 모델 사용')
@@ -33,7 +41,7 @@ def loadModel():
 def saveModel():
     pass
 
-def setModel(model):
+def setModel():
     from spacy.util import minibatch, compounding
     import random
 
@@ -45,42 +53,39 @@ def setModel(model):
             fullText = f.read()
             lines = fullText.split('\n')
 
-            trainData.append(lines)     # lines 예시 : ("이번에 소개할 제품은 아임미미의 아이섀도우 팔레트입니다.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]})
+            trainData.append(lines)
             
-    # 파이프
-    ner = model.add_pipe("ner")
-    pipe_exceptions = ["ner", "trf_wordpiecer", "trf_tok2vec"]
-    unaffected_pipes = [pipe for pipe in model.pipe_names if pipe not in pipe_exceptions]
+    # trainData = [("이번에 소개할 제품은 아임미미의 아이섀도우 팔레트입니다.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]})]
+    # 위와 같은 형태의 trainData 제작해야 함
 
-    # 라벨
+    model = spacy.blank('en')
+    model.add_pipe("ner")
+    ner = model.get_pipe("ner")
     ner.add_label("PRODUCT")
-    ner.add_label("ORG")
 
-    # 하이퍼파라미터
-    epochs = 10
-
-    with model.disable_pipes(*unaffected_pipes):
-      # Training for 30 iterations
-      for iteration in range(epochs):
-
-        # shuufling examples  before every iteration
+    global HP
+    model.begin_training()
+    for itn in range(HP['epochs']):
         random.shuffle(trainData)
         losses = {}
-        # batch up the examples using spaCy's minibatch
-        batches = minibatch(trainData, size = compounding(4.0, 32.0, 1.001)) #시작크기, 최대크기, 증가율
-        for batch in batches:   # 데이터의 묶음
+        batches = minibatch(
+            trainData,
+            size = compounding(HP['minBatch'], HP['maxBatch'], HP['learnRate']),
+        )
+        for batch in batches:
             texts, annotations = zip(*batch)
-            model.update(
-                        texts,  # batch of texts
-                        annotations,  # batch of annotations
-                        drop=0.5,  # dropout - make it harder to memorise data
-                        losses=losses
-                    )
-            print("Losses", losses)
+            try:
+                model.update(
+                    texts, annotations, drop = HP['dropout'], losses = losses,
+                )
+            except:
+                pass
+
+        print(f"{itn} Losses", losses)
 
     global modelName
     model.to_disk(modelName)
-
+    
 os.system('cls')
 model = loadModel()
 print('스크립트 읽기')
