@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Applause
 OMG
 a
@@ -12,6 +13,11 @@ crazy
 dont
 email
 end
+=======
+also
+ask
+email
+>>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
 especially
 fefwf
 ffdsfsdf
@@ -26,6 +32,7 @@ hi
 honest
 it
 just
+<<<<<<< HEAD
 know
 later
 maam
@@ -37,15 +44,27 @@ ouch
 phone
 please
 rarely
+=======
+later
+music
+now
+please
+>>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
 really
 suddenly
 that
 then
 this
 tiktok
+<<<<<<< HEAD
 too
 uh
 uh
 video
 wow
 zz
+=======
+uh
+video
+wow
+>>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111

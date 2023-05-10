@@ -29,7 +29,8 @@ for f in filePaths:
     text = ''
     for line in lines:
         if line != '':
-            text += line
+            text += ' ' + line
     newText = sent_tokenize(text)
 
     editFile(f.name.split('/')[-2], newText)
+

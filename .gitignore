@@ -5,3 +5,5 @@
 /.vs
 /norms
 /scripts
+/model
+/tokenizer

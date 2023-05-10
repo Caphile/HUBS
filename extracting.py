@@ -61,6 +61,9 @@ def label(text):
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForTokenClassification.from_pretrained('bert-base-uncased', num_labels = 3)
 
+#model.save_pretrained('model')
+#tokenizer.save_pretrained('tokenizer')
+
 filePaths = openFile()
 
 for f in filePaths:
