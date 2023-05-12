@@ -5,9 +5,9 @@ from tkinter import filedialog, Tk
 import os
 
 #-------------------------------------------------------------------------------------
-# ¸ðµ¨¸í(°æ·Î), ÃßÈÄ¿¡ À¯µ¿ÀûÀ¸·Î ¼±ÅÃ °¡´ÉÇÏ°Ô²û ¹Ù²Ü ¿©Áö ÀÖÀ½
+# ëª¨ë¸ëª…(ê²½ë¡œ), ì¶”í›„ì— ìœ ë™ì ìœ¼ë¡œ ì„ íƒ ê°€ëŠ¥í•˜ê²Œë” ë°”ê¿€ ì—¬ì§€ ìžˆìŒ
 modelName = 'ner_model'
-# ÇÏÀÌÆÛÆÄ¶ó¹ÌÅÍ
+# í•˜ì´í¼íŒŒë¼ë¯¸í„°
 HP = {
     'dropout'   :   0.5,
     'minBatch'  :   4.0,
@@ -15,9 +15,9 @@ HP = {
     'learnRate' :   0.01,
     'epochs'    :   10
     }
-# ¶óº§
+# ë¼ë²¨
 labels = ['PRODUCT', 'DESCRIPTION']
-# È®·ü(predict)
+# í™•ë¥ (predict)
 probability = 0.5
 #-------------------------------------------------------------------------------------
 
@@ -29,20 +29,20 @@ def filePaths():
 
 def loadModel():
     global modelName
-    print('1. Ä¿½ºÅÒ ¸ðµ¨ »ý¼º')
-    print('2. ±âÁ¸ ¸ðµ¨ »ç¿ë')
+    print('1. ì»¤ìŠ¤í…€ ëª¨ë¸ ìƒì„±')
+    print('2. ê¸°ì¡´ ëª¨ë¸ ì‚¬ìš©')
     print('====================================')
-    print('¼±ÅÃ : ', end = '')
+    print('ì„ íƒ : ', end = '')
     opt = int(input())
     if opt == 1:
         setModel()
         model = spacy.load(modelName)
     elif opt == 2:
         try:
-            print('Ä¿½ºÅÒ ¸ðµ¨ »ç¿ë')
+            print('ì»¤ìŠ¤í…€ ëª¨ë¸ ì‚¬ìš©')
             model = spacy.load(modelName)
         except:
-            print('¿ÀÇÂ¼Ò½º·Î Á¦°øµÈ ¸ðµ¨ »ç¿ë')
+            print('ì˜¤í”ˆì†ŒìŠ¤ë¡œ ì œê³µëœ ëª¨ë¸ ì‚¬ìš©')
             model = spacy.load('en_core_web_sm')
     return model
 
@@ -54,7 +54,7 @@ def setModel():
     import random
 
     trainData = []
-    print('ÇÐ½À¿ë µ¥ÀÌÅÍ ÀÐ±â')
+    print('í•™ìŠµìš© ë°ì´í„° ì½ê¸°')
     fp = filePaths()
     for f in fp:
         with open(f, 'r', encoding ='UTF8') as f:
@@ -63,8 +63,8 @@ def setModel():
 
             trainData.append(lines)
             
-    # trainData = [("ÀÌ¹ø¿¡ ¼Ò°³ÇÒ Á¦Ç°Àº ¾ÆÀÓ¹Ì¹ÌÀÇ ¾ÆÀÌ¼¨µµ¿ì ÆÈ·¹Æ®ÀÔ´Ï´Ù.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]})]
-    # À§¿Í °°Àº ÇüÅÂÀÇ trainData Á¦ÀÛÇØ¾ß ÇÔ
+    # trainData = [("ì´ë²ˆì— ì†Œê°œí•  ì œí’ˆì€ ì•„ìž„ë¯¸ë¯¸ì˜ ì•„ì´ì„€ë„ìš° íŒ”ë ˆíŠ¸ìž…ë‹ˆë‹¤.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]})]
+    # ìœ„ì™€ ê°™ì€ í˜•íƒœì˜ trainData ì œìž‘í•´ì•¼ í•¨
 
     model = spacy.blank('en')
     model.add_pipe("ner")
@@ -95,13 +95,15 @@ def setModel():
 
     global modelName
     model.to_disk(modelName)
+
+#-------------------------------------------------------------------------------------
     
 os.system('cls')
 model = loadModel()
-print('½ºÅ©¸³Æ® ÀÐ±â')
+print('ìŠ¤í¬ë¦½íŠ¸ ì½ê¸°')
 fp = filePaths()
 
-# À¯Æ©ºê ½ºÅ©¸³Æ®¿¡¼­ ÃßÃâÇÑ ÅØ½ºÆ®
+# ìœ íŠœë¸Œ ìŠ¤í¬ë¦½íŠ¸ì—ì„œ ì¶”ì¶œí•œ í…ìŠ¤íŠ¸
 for f in fp:
     with open(f, 'r', encoding ='UTF8') as f:
         fullText = f.read()
@@ -117,13 +119,13 @@ for f in fp:
                     if entity.label_ == 'PRODUCT':
                         prod.append(entity.text)
 
-                # ÅØ½ºÆ® ºÐ·ù¸¦ ÅëÇÑ È­ÀåÇ° ¼³¸í ÃßÃâ
+                # í…ìŠ¤íŠ¸ ë¶„ë¥˜ë¥¼ í†µí•œ í™”ìž¥í’ˆ ì„¤ëª… ì¶”ì¶œ
                 descriptions = []
                 sentences = [sent.text for sent in doc.sents]
                 for sentence in sentences:
                     sentence_doc = model(sentence)
-                    if sentence_doc.cats.get('DESCRIPTION', 0) > probability:   # È®·ü Á¶Á¤
+                    if sentence_doc.cats.get('DESCRIPTION', 0) > probability:   # í™•ë¥  ì¡°ì •
                         descriptions.append(sentence)
 
-        print('È­ÀåÇ° ¸í:', ' '.join(prod))
-        print('È­ÀåÇ° ¼³¸í:', ' '.join(desc))
+        print('í™”ìž¥í’ˆ ëª…:', ' '.join(prod))
+        print('í™”ìž¥í’ˆ ì„¤ëª…:', ' '.join(desc))
