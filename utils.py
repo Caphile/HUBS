@@ -17,9 +17,12 @@ def filePaths():
 def readFile(path, name):
     with open(f'{path}/{name}', 'r', encoding ='UTF8') as f:
         text = f.readlines()
+    for i in range(len(text)):
+        text[i] = text[i].replace('\n', '')
     return text
 
 def saveFile(path, name, text):
-    with open(f'{path}/{name}', 'w') as f:
+
+    with open(f'{path}/{name}', 'w', encoding ='UTF8') as f:
         for line in text:
             f.write(line + '\n')
