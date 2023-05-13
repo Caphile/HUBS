@@ -11,7 +11,7 @@ class Normalize:    # 정규화 함수
     def __init__(self, text, stopwords):
         self.text = self.stripSCharacter(text)
         self.text = self.removeStopword(self.text, stopwords)
-        #self.text = self.lowercase(self.text)
+        self.text = self.lowercase(self.text)
 
     def stripSCharacter(self, text):        # 특수문자 제거
         return re.sub('[^a-zA-Z0-9\s]', '', text)
@@ -75,7 +75,7 @@ def crawling():
                     os.makedirs(path)
 
                 data = transcript.translate('en').fetch()
-                text = []
+                text = [url, '\n']
                 for i in data:
                     text.append(i['text'])
 
