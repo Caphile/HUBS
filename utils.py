@@ -23,6 +23,6 @@ def readFile(path, name):
 
 def saveFile(path, name, text):
 
-    with open(f'{path}/{name}', 'w', encoding ='UTF8') as f:
+    with open(f'{path}/{name}.txt', 'w', encoding ='UTF8') as f:    # txt파일
         for line in text:
             f.write(line + '\n')
