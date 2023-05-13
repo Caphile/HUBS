@@ -1,5 +1,3 @@
-# -*- encoding= cp949 -*-
-
 import spacy
 import os
 import utils
@@ -99,11 +97,10 @@ fp, fn = utils.filePaths()
 # 유튜브 스크립트에서 추출한 텍스트
 for p, n in zip(fp, fn): 
     text = utils.readFile(p, n)
-    lines = text.split('\n')
 
     prod = []
     desc = []
-    for line in lines:
+    for line in text:
         if line != '':
             doc = model(line)
 
