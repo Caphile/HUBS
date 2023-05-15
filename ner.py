@@ -1,5 +1,7 @@
 import spacy
+from spacy.training.example import Example
 import os
+import json
 import utils
 
 #-------------------------------------------------------------------------------------
@@ -50,16 +52,13 @@ def setModel():
     fp, fn = utils.filePaths()
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
-        lines = text.split('\n')
-
-        trainData.append(lines)
+        for line in text:
+            trainData.append(eval(line))
             
-    # trainData = [("이번에 소개할 제품은 아임미미의 아이섀도우 팔레트입니다.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]})]
-    # 위와 같은 형태의 trainData 제작해야 함
-
     model = spacy.blank('en')
     model.add_pipe("ner")
     ner = model.get_pipe('ner')
+    model.add_pipe('parser')
     for label in labels:
         ner.add_label(label)
 
@@ -74,10 +73,14 @@ def setModel():
             size = compounding(HP['minBatch'], HP['maxBatch'], HP['learnRate']),
         )
         for batch in batches:
-            texts, annotations = zip(*batch)
+            examples = []
+            for text, annotation in batch:
+                doc = model.make_doc(text)
+                example = Example.from_dict(doc, annotation)
+                examples.append(example)
             try:
                 model.update(
-                    texts, annotations, drop = HP['dropout'], losses = losses,
+                    examples, drop = HP['dropout'], losses = losses,
                 )
             except:
                 pass
