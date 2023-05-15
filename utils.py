@@ -1,10 +1,14 @@
 from tkinter import filedialog, Tk
 import os
 
-def filePaths():
+def filePaths(opt = 1):
     root = Tk()
     root.withdraw()
-    fullPaths = filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
+
+    if opt == 1:
+        fullPaths = filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
+    elif opt == 2:
+        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files', '*.xlsx'), ("All files", "*.*")])
 
     paths, names = [], []
     for p in fullPaths:
@@ -22,7 +26,6 @@ def readFile(path, name):
     return text
 
 def saveFile(path, name, text):
-
     with open(f'{path}/{name}.txt', 'w', encoding ='UTF8') as f:    # txt파일
         for line in text:
             f.write(line + '\n')
