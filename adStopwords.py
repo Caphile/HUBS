@@ -20,8 +20,13 @@ with open(fileName, 'r+') as f:
         os.system('cls')
 
         if stopW in lines:  # 이미 존재하면 삭제
-            lines.remove(stopW)
-            print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}이 목록에서 {Fore.RED}삭제{Style.RESET_ALL}됨')
+            print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}을 목록에서 {Fore.RED}삭제{Style.RESET_ALL}(Y/N)', end = ' ')
+            opt = input()
+            if opt == 'Y' or opt == 'y':
+                lines.remove(stopW)
+                print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}이 목록에서 {Fore.RED}삭제{Style.RESET_ALL}됨')
+            else:
+                continue
         else:
             lines.append(stopW)
             print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}이 목록에 {Fore.BLUE}추가{Style.RESET_ALL}됨')
