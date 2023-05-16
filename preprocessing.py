@@ -7,23 +7,6 @@ import time
 import os, re
 import utils
 
-class Normalize:    # 정규화 함수
-    def __init__(self, text, stopwords):
-        self.text = self.stripSCharacter(text)
-        self.text = self.removeStopword(self.text, stopwords)
-        self.text = self.lowercase(self.text)
-
-    def stripSCharacter(self, text):        # 특수문자 제거
-        return re.sub('[^a-zA-Z0-9\s]', '', text)
-
-    def removeStopword(self, text, stopwords):     # 불용어 제거
-        words = text.split(' ')
-        return ' '.join([word for word in words if word.lower() not in stopwords])
-
-    def lowercase(self, text):              # 소문자화
-        words = text.split(' ')
-        return ' '.join([word.lower() for word in words])
-
 def crawling():
     url_b = clipboard.paste()
 
@@ -109,10 +92,6 @@ def resentense(fp = None, fn = None):
         normalize(p, f'1_{newName}')
 
 def normalize(fp = None, fn = None):
-    stopwords = utils.readFile(os.getcwd(), 'Stopwords.txt')
-    for i in range(len(stopwords)):
-        stopwords[i] = stopwords[i].replace('\n', '')
-
     if fp == None or fn == None:
         fp, fn = utils.filePaths()
     else:
@@ -123,7 +102,7 @@ def normalize(fp = None, fn = None):
 
         newText = []
         for line in text:
-            newLine = Normalize(line, stopwords).text
+            newLine = N.process(line)
             if newLine != []:
                 newText.append(newLine)
 
@@ -131,4 +110,5 @@ def normalize(fp = None, fn = None):
         utils.saveFile(p, f'2_{newName}', newText)
         print('normalize 완료')
 
+N = utils.Normalize()
 crawling()

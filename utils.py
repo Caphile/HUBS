@@ -1,5 +1,28 @@
 from tkinter import filedialog, Tk
-import os
+import os, re
+
+class Normalize:    # 정규화 함수
+    def __init__(self):
+        self.stopwords = readFile(os.getcwd(), 'Stopwords')
+        for i in range(len(self.stopwords)):
+            self.stopwords[i] = self.stopwords[i].replace('\n', '')
+
+    def process(self, text):
+        text = self.stripSCharacter(text)
+        text = self.removeStopword(text)
+        text = self.lowercase(text)
+        return text
+
+    def stripSCharacter(self, text):        # 특수문자 제거
+        return re.sub('[^a-zA-Z0-9\s]', '', text)
+
+    def removeStopword(self, text):         # 불용어 제거
+        words = text.split(' ')
+        return ' '.join([word for word in words if word.lower() not in self.stopwords])
+
+    def lowercase(self, text):              # 소문자화
+        words = text.split(' ')
+        return ' '.join([word.lower() for word in words])
 
 def filePaths(opt = 1):
     root = Tk()
@@ -19,7 +42,7 @@ def filePaths(opt = 1):
     return paths, names
 
 def readFile(path, name):
-    with open(f'{path}/{name}', 'r', encoding ='UTF8') as f:
+    with open(f'{path}/{name}.txt', 'r', encoding ='UTF8') as f:
         text = f.readlines()
     for i in range(len(text)):
         text[i] = text[i].replace('\n', '')

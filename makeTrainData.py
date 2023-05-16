@@ -40,13 +40,17 @@ def standard(origin, target, label):
         label = [label]
 
     entities = []
+    newOrigin = N.process(origin)
+
     for t, l in zip(target, label):
-        s = origin.find(t)
+        s = newOrigin.find(t)
         e = s + len(t)
         entities.append((s, e, f'{l}'))
 
-    res = (origin, {'entities' : entities})
+    res = (newOrigin, {'entities' : entities})
     return str(res)
+
+N = utils.Normalize()
 
 print('1. txt\n2. xlsx')
 print('읽을 파일 종류 : ', end = '')
