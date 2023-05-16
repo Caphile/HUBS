@@ -48,7 +48,8 @@ def standard(origin, target, label):
     res = (origin, {'entities' : entities})
     return str(res)
 
-print('1. txt 2. xlsx')
+print('1. txt\n2. xlsx')
+print('읽을 파일 종류 : ', end = '')
 opt = int(input())
 if opt == 1:
     txtLabels()
