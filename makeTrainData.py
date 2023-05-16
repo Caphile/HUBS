@@ -1,22 +1,25 @@
 import utils
 import pandas as pd
 
-def txtLabels():
+def txtLabels():    # 수동 라벨링 데이터
     fp, fn = utils.filePaths()
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
 
         newText = []
         for line in text:
-            sentense, info = line.split('/')
-            label = info.split()[0]
-            entities = ' '.join(info.split()[1 : ])
-        
-            # newLine = f'{sentense}, {}'
+            token = line.split('/')
+            sentense = token[0]
 
-            print(sentense)
-            print(label)
-            print(entities)
+            targets, labels = [], []
+            for info in token[1 : ]:
+                si = info.split()
+                targets.append(' '.join(si[1 : ]))
+                labels.append(si[0])
+            
+            newText.append(standard(sentense, targets, labels))
+
+        utils.saveFile(p, n.replace('.txt', ''), newText)
 
 def xlsxLabels():   # 세포라 크롤링 데이터
     fp, fn = utils.filePaths(2)
@@ -31,14 +34,23 @@ def xlsxLabels():   # 세포라 크롤링 데이터
         utils.saveFile(p, n.replace('.xlsx', ''), newData)
 
 def standard(origin, target, label):
-    s = origin.find(target)
-    e = s + len(target)
+    if type(target) == str:
+        target = [target]
+    if type(label) == str:
+        label = [label]
 
-    res = (origin, {'entities' : [(s, e, f'{label}')]})
-    #res = (origin, (s, e, f'{label}'))
+    entities = []
+    for t, l in zip(target, label):
+        s = origin.find(t)
+        e = s + len(t)
+        entities.append((s, e, f'{l}'))
+
+    res = (origin, {'entities' : entities})
     return str(res)
 
-    #trainData = [("이번에 소개할 제품은 아임미미의 아이섀도우 팔레트입니다.", {"entities": [(12, 18, "ORG"), (21, 30, "PRODUCT")]})]
-    # 라벨링 된 txt 파일 받아 표준화
-
-xlsxLabels()
+print('1. txt 2. xlsx')
+opt = int(input())
+if opt == 1:
+    txtLabels()
+elif opt == 2:
+    xlsxLabels()
