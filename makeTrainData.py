@@ -9,7 +9,7 @@ def txtLabels():    # 수동 라벨링 데이터
         newText = []
         for line in text:
             token = line.split('/')
-            sentense = token[0]
+            sentense = ' '.join(token[0].split())
 
             targets, labels = [], []
             for info in token[1 : ]:
@@ -19,7 +19,7 @@ def txtLabels():    # 수동 라벨링 데이터
             
             newText.append(standard(sentense, targets, labels))
 
-        utils.saveFile(p, n.replace('.txt', ''), newText)
+        utils.saveFile(p, 'norm_' + n.replace('.txt', ''), newText)
 
 def xlsxLabels():   # 세포라 크롤링 데이터
     fp, fn = utils.filePaths(2)
