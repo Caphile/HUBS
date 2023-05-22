@@ -42,6 +42,7 @@ def filePaths(opt = 1):
     return paths, names
 
 def readFile(path, name):
+    name = re.sub(r'.txt', '', name)
     with open(f'{path}/{name}.txt', 'r', encoding ='UTF8') as f:
         text = f.readlines()
     for i in range(len(text)):
