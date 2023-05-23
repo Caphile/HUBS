@@ -22,8 +22,6 @@ def editFile(title, text, lang = 'en'):
 
 filePaths = openFile()
 
-
-
 def summarize_text(text, n):
     # 텍스트 전처리: 문장 토큰화, 단어 토큰화, 불용어 제거
     sentences = sent_tokenize(text) #sent_tokenize() 함수는 주어진 텍스트를 문장으로 나누어 리스트 형태로 반환합니다. 각 문장은 텍스트에서 문장 구분 기호(온점, 느낌표, 물음표 등)를 기준으로 분리됩니다.
@@ -64,6 +62,6 @@ for line in summary:
 
     editFile(f.name.split('/')[-2], summary)
     
-print(text)    
+print(text)
     
     
