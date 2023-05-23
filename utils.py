@@ -10,15 +10,16 @@ class Normalize:    # 정규화 함수
     def process(self, text):
         text = self.stripSCharacter(text)
         text = self.removeStopword(text)
-        text = self.lowercase(text)
+        #text = self.lowercase(text)
         return text
 
     def stripSCharacter(self, text):        # 특수문자 제거
-        return re.sub('[^a-zA-Z0-9\s]', '', text)
+        #return re.sub('[^a-zA-Z0-9\s]', '', text)
+        return re.sub('[^a-zA-Z0-9+\s]', '', text)  # + 기호 살림
 
     def removeStopword(self, text):         # 불용어 제거
         words = text.split()
-        return ' '.join([word for word in words if word.lower() not in self.stopwords])
+        return ' '.join([word for word in words if word not in self.stopwords])
 
     def lowercase(self, text):              # 소문자화
         words = text.split()
