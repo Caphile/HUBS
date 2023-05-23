@@ -58,7 +58,7 @@ def crawling():
                     os.makedirs(path)
 
                 data = transcript.translate('en').fetch()
-                text = [url, '\n']
+                text = [url]
                 for i in data:
                     text.append(i['text'])
 
@@ -80,12 +80,13 @@ def resentense(fp = None, fn = None):
         text = utils.readFile(p, n)
 
         newText = ''
-        for line in text:
+        for line in text[1 : ]:
             if line != '':
                 newText += ' ' + line
         newText = sent_tokenize(newText)
-
+        newText = [text[0]] + newText
         newName = re.sub(r'\d+_', '', n)
+
         utils.saveFile(p, f'1_{newName}', newText)
         print('resentense 완료')
 
@@ -101,10 +102,11 @@ def normalize(fp = None, fn = None):
         text = utils.readFile(p, n)
 
         newText = []
-        for line in text:
+        for line in text[1 : ]:
             newLine = N.process(line)
             if newLine != []:
                 newText.append(newLine)
+        newText = [text[0]] + newText
 
         newName = re.sub(r'\d+_', '', n)
         utils.saveFile(p, f'2_{newName}', newText)
