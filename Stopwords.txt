@@ -1,4 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+=======
+>>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
+>>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
+>>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
 Applause
 OMG
 a
@@ -6,18 +14,16 @@ aa
 aaa
 afternoon
 also
+also
 anymore
+ask
 ask
 bro
 crazy
 dont
 email
-end
-=======
-also
-ask
 email
->>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
+end
 especially
 fefwf
 ffdsfsdf
@@ -32,39 +38,33 @@ hi
 honest
 it
 just
-<<<<<<< HEAD
 know
+later
 later
 maam
 music
+music
 not
+now
 now
 ofa
 ouch
 phone
 please
-rarely
-=======
-later
-music
-now
 please
->>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
+rarely
 really
 suddenly
 that
 then
 this
 tiktok
-<<<<<<< HEAD
 too
 uh
 uh
-video
-wow
-zz
-=======
 uh
 video
+video
 wow
->>>>>>> d27b9fecddd0375e7b016186ded97ce56b022111
+wow
+zz
