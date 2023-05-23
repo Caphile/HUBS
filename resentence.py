@@ -1,5 +1,4 @@
 # -*- coding: cp949 -*-
-
 import nltk
 from nltk.tokenize import sent_tokenize
 from tkinter import filedialog, Tk

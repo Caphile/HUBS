@@ -5,9 +5,9 @@ from nltk.corpus import stopwords
 import os
 import re
 
-def searchPath(fileName):   # ÇöÀç py¿Í °°Àº °æ·Î»ó¿¡ ½ºÅ©¸³Æ® ³õ¾Æ¾ßÇÔ
+def searchPath(fileName):   # ï¿½ï¿½ï¿½ï¿½ pyï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î»ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
     rootDir = f'{os.getcwd()}/scripts'
-    folders = [folder.path for folder in os.scandir(rootDir) if folder.is_dir()]    # HUBS Æú´õÀÇ ÇÏÀ§ ¸ðµç Æú´õ
+    folders = [folder.path for folder in os.scandir(rootDir) if folder.is_dir()]    # HUBS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     
     folderDirs = []
     fileName = '(res)script_en.txt'
@@ -27,8 +27,8 @@ def saveFile(fileName, text):
         for line in text:
             f.write(line + '\n')
 
-def addStopwords(): # ºÒ¿ë¾î Ä¿½ºÅÒ
-    words = openFile('./Stopwords.txt') # ¼Ò¹®ÀÚ¸¸ ÀÔ·Â!
+def addStopwords(): # ï¿½Ò¿ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½
+    words = openFile('./Stopwords.txt') # ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½Ô·ï¿½!
 
     ASW = []    # additional stopwords
     for word in words:
@@ -37,20 +37,20 @@ def addStopwords(): # ºÒ¿ë¾î Ä¿½ºÅÒ
         ASW.append(word)
     return ASW
 
-class Normalize:    # Á¤±ÔÈ­ ÇÔ¼ö
+class Normalize:    # ï¿½ï¿½ï¿½ï¿½È­ ï¿½Ô¼ï¿½
     def __init__(self, text, stopwords):
         self.text = self.stripSCharacter(text)
         self.text = self.removeStopword(self.text, stopwords)
         #self.text = self.lowercase(self.text)
-
-    def stripSCharacter(self, text):        # Æ¯¼ö¹®ÀÚ Á¦°Å
+    
+    def stripSCharacter(self, text):        # íŠ¹ìˆ˜ë¬¸ìž ì œê±°
         return re.sub('[^a-zA-Z0-9\s]', '', text)
 
-    def removeStopword(self, text, stopwords):     # ºÒ¿ë¾î Á¦°Å
+    def removeStopword(self, text, stopwords):     # ï¿½Ò¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         words = text.split(' ')
         return ' '.join([word for word in words if word.lower() not in stopwords])
 
-    def lowercase(self, text):              # ¼Ò¹®ÀÚÈ­
+    def lowercase(self, text):              # ï¿½Ò¹ï¿½ï¿½ï¿½È­
         words = text.split(' ')
         return ' '.join([word.lower() for word in words])
 
@@ -67,7 +67,7 @@ for folderDir in folderDirs:
 
     newText = []
     for line in text:
-        if len(line) > 2 and line[-1 : ] == '\n':   # ÅØ½ºÆ® ¸¶Áö¸·ÀÇ °³Çà¹®ÀÚ Á¦°Å
+        if len(line) > 2 and line[-1 : ] == '\n':   # ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½à¹®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             line = line[ : -1]
 
         newLine = Normalize(line, stopword_list).text
