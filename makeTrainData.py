@@ -43,8 +43,9 @@ def standard(origin, target, label):
     newOrigin = N.process(origin)
 
     for t, l in zip(target, label):
-        s = newOrigin.find(N.process(t))
-        e = s + len(t)
+        nt = N.process(t)
+        s = newOrigin.find(nt)
+        e = s + len(nt)
         entities.append((s, e, f'{l}'))
 
     res = (newOrigin, {'entities' : entities})

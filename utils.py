@@ -17,11 +17,11 @@ class Normalize:    # 정규화 함수
         return re.sub('[^a-zA-Z0-9\s]', '', text)
 
     def removeStopword(self, text):         # 불용어 제거
-        words = text.split(' ')
+        words = text.split()
         return ' '.join([word for word in words if word.lower() not in self.stopwords])
 
     def lowercase(self, text):              # 소문자화
-        words = text.split(' ')
+        words = text.split()
         return ' '.join([word.lower() for word in words])
 
 def filePaths(opt = 1):
@@ -31,7 +31,7 @@ def filePaths(opt = 1):
     if opt == 1:
         fullPaths = filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
     elif opt == 2:
-        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files', '*.xlsx'), ("All files", "*.*")])
+        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files',('*.csv', '*.xlsx')), ("All files", "*.*")])
 
     paths, names = [], []
     for p in fullPaths:
