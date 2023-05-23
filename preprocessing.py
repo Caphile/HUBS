@@ -3,6 +3,7 @@ from nltk.tokenize import sent_tokenize
 from bs4 import BeautifulSoup
 import requests
 import clipboard
+import pyperclip
 import time
 import os, re
 import utils
@@ -113,4 +114,5 @@ def normalize(fp = None, fn = None):
         print('normalize 완료')
 
 N = utils.Normalize()
+pyperclip.copy('')
 crawling()
