@@ -3,6 +3,26 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from collections import defaultdict
 from heapq import nlargest
+from tkinter import filedialog, Tk
+import os
+
+nltk.download('punkt')
+
+def openFile():
+    root = Tk()
+    root.withdraw()
+
+    return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
+
+def editFile(title, text, lang = 'en'):
+    path = f'scripts/{title}/(su)script_{lang}.txt'
+    with open(path, 'w', encoding = 'UTF-8') as f:
+        for t in text:
+            f.write(t)
+
+filePaths = openFile()
+
+
 
 def summarize_text(text, n):
     # 텍스트 전처리: 문장 토큰화, 단어 토큰화, 불용어 제거
@@ -25,13 +45,25 @@ def summarize_text(text, n):
                 sentence_scores[sentence] += word_freq[word]
 
     # 상위 n개의 문장 선택
+
     summary_sentences = nlargest(n, sentence_scores, key=sentence_scores.get)
     summary = ' '.join(summary_sentences)
     return summary
 
-# 예시 사용법
-with open("올영베스트.txt","r",encoding='UTF8')as f:
-    point=f.readlines()
-    text=' '.join(point)
-summary = summarize_text(text,1) #(text,n) n 은 상위 n개의 문장이 출력되도록 조정이 가능함.
-print(summary) 
+for f in filePaths:
+    with open(f, 'r', encoding='utf-8') as f:
+        fullText = f.read()
+        lines = fullText.split('\n')
+        
+    text=''.join(fullText)
+summary = summarize_text(text,1)    
+
+for line in summary:
+    text += line
+    newText = sent_tokenize(text)
+
+    editFile(f.name.split('/')[-2], summary)
+    
+print(text)    
+    
+    
