@@ -1,3 +1,4 @@
+from tkinter import N
 import spacy
 from spacy.training.example import Example
 import os
@@ -10,13 +11,13 @@ modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
     'dropout'   :   0.5,
-    'minBatch'  :   4.0,
-    'maxBatch'  :   32.0,
+    'minBatch'  :   16,
+    'maxBatch'  :   32,
     'learnRate' :   0.01,
     'epochs'    :   10
-    }
+}
 # 라벨
-labels = ['PRODUCT', 'DESCRIPTION']
+labels = ['PRODUCT']
 # 확률(predict)
 probability = 0.5
 #-------------------------------------------------------------------------------------
@@ -40,9 +41,6 @@ def loadModel():
             model = spacy.load('en_core_web_sm')
     return model
 
-def saveModel():
-    pass
-
 def setModel():
     from spacy.util import minibatch, compounding
     import random
@@ -54,44 +52,37 @@ def setModel():
         text = utils.readFile(p, n)
         for line in text:
             trainData.append(eval(line))
-            
-    model = spacy.blank('en')
-    model.add_pipe("ner")
-    ner = model.get_pipe('ner')
-    model.add_pipe('parser')
+
+    nlp = spacy.blank('en')
+    ner = nlp.create_pipe("ner")
     for label in labels:
         ner.add_label(label)
+    nlp.add_pipe('sentencizer')
 
-    model.begin_training()
-
-    global HP
+    optimizer = nlp.begin_training()
     for itn in range(HP['epochs']):
         random.shuffle(trainData)
         losses = {}
         batches = minibatch(
             trainData,
-            size = compounding(HP['minBatch'], HP['maxBatch'], HP['learnRate']),
+            size = compounding(HP['minBatch'], HP['maxBatch'], HP['learnRate'])
         )
         for batch in batches:
-            examples = []
-            for text, annotation in batch:
-                doc = model.make_doc(text)
-                example = Example.from_dict(doc, annotation)
-                examples.append(example)
-            try:
-                model.update(
-                    examples, drop = HP['dropout'], losses = losses,
-                )
-            except:
-                pass
+            example = []
+            texts, annotations = zip(*batch)
+            for text, annotation in zip(texts, annotations):
+                doc = nlp.make_doc(text)
+                tags = spacy.training.offsets_to_biluo_tags(doc, annotation['entities'])
+                example.append(Example.from_dict(doc, {'entities': tags}))
+            nlp.update(example, drop = HP['dropout'], sgd = optimizer, losses = losses)
 
         print(f"{itn} Losses", losses)
 
     global modelName
-    model.to_disk(modelName)
+    nlp.to_disk(modelName)
 
 #-------------------------------------------------------------------------------------
-    
+
 os.system('cls')
 model = loadModel()
 print('스크립트 읽기')
@@ -112,12 +103,11 @@ for p, n in zip(fp, fn):
                     prod.append(entity.text)
 
             # 텍스트 분류를 통한 화장품 설명 추출
-            descriptions = []
             sentences = [sent.text for sent in doc.sents]
             for sentence in sentences:
                 sentence_doc = model(sentence)
-                if sentence_doc.cats.get('DESCRIPTION', 0) > probability:   # 확률 조정
-                    descriptions.append(sentence)
+                if sentence_doc.cats.get('DESCRIPTION', 0) > probability:
+                    desc.append(sentence)
 
     print('화장품 명:', ' '.join(prod))
     print('화장품 설명:', ' '.join(desc))
