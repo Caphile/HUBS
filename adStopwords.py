@@ -34,6 +34,7 @@ with open(fileName, 'r+', encoding ='UTF8') as f:
             lines.append(stopW)
             print(f'{Fore.LIGHTBLACK_EX}{stopW}{Style.RESET_ALL}이 목록에 {Fore.BLUE}추가{Style.RESET_ALL}됨\n')
 
+        #lines = [word.lower() for word in lines]
         lines.sort()    
         
         f.seek(0)
