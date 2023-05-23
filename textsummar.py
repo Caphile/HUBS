@@ -62,6 +62,4 @@ for line in summary:
 
     editFile(f.name.split('/')[-2], summary)
     
-print(text)
-    
     
