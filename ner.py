@@ -9,8 +9,8 @@ import utils
 modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
-    'dropout'   :   0.25,
-    'minBatch'  :   16,
+    'dropout'   :   0.3,
+    'minBatch'  :   10,
     'maxBatch'  :   32,
     'learnRate' :   0.01,
     'epochs'    :   75,
@@ -45,13 +45,19 @@ def setModel():
     from spacy.util import minibatch, compounding
     import random
 
-    trainData = []
+    ds = []
     print('학습용 데이터 읽기')
     fp, fn = utils.filePaths()
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
         for line in text:
-            trainData.append(eval(line))
+            ds.append(eval(line))
+
+    dataSize = len(ds)
+    splitIdx = int(0.8 * dataSize)
+
+    trainData = ds[ : splitIdx]
+    validationData = ds[splitIdx : ]
 
     nlp = spacy.blank('en')
     nlp.add_pipe('sentencizer')
@@ -91,6 +97,12 @@ def setModel():
                 print(f"No improvement for {notImp} epochs. Early stopping.")
                 break
 
+        '''
+        validation_results = nlp.evaluate(validationData)
+        validation_loss = validation_results['ents_per_type']['']
+        print(f"Validation Loss: {validation_loss:.3f}")
+        '''
+
     global modelName
     nlp.to_disk(modelName)
 
@@ -115,4 +127,5 @@ for p, n in zip(fp, fn):
                     prod.append(entity.text)
 
     print('=======================================================')
-    print('화장품 명:\n', '\n'.join(prod))
+    print('화장품 명:')
+    print('\n'.join(prod))
