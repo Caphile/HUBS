@@ -2,7 +2,6 @@ from tkinter import N
 import spacy
 from spacy.training.example import Example
 import os
-import json
 import utils
 
 #-------------------------------------------------------------------------------------
@@ -10,11 +9,12 @@ import utils
 modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
-    'dropout'   :   0.5,
+    'dropout'   :   0.25,
     'minBatch'  :   16,
     'maxBatch'  :   32,
     'learnRate' :   0.01,
-    'epochs'    :   10
+    'epochs'    :   75,
+    'patience'  :   100
 }
 # 라벨
 labels = ['PRODUCT']
@@ -54,12 +54,16 @@ def setModel():
             trainData.append(eval(line))
 
     nlp = spacy.blank('en')
-    ner = nlp.create_pipe("ner")
+    nlp.add_pipe('sentencizer')
+    ner = nlp.create_pipe('ner')
     for label in labels:
         ner.add_label(label)
-    nlp.add_pipe('sentencizer')
+    nlp.add_pipe('ner')
 
-    optimizer = nlp.begin_training()
+    notImp = 0
+    bestLoss = 10000
+
+    nlp.begin_training()
     for itn in range(HP['epochs']):
         random.shuffle(trainData)
         losses = {}
@@ -74,9 +78,18 @@ def setModel():
                 doc = nlp.make_doc(text)
                 tags = spacy.training.offsets_to_biluo_tags(doc, annotation['entities'])
                 example.append(Example.from_dict(doc, {'entities': tags}))
-            nlp.update(example, drop = HP['dropout'], sgd = optimizer, losses = losses)
+            nlp.update(example, drop = HP['dropout'], losses = losses)
 
-        print(f"{itn} Losses", losses)
+        print(f"{itn} Losses: {losses['ner']:.3f}")
+
+        if bestLoss > losses['ner']:
+            bestLoss = losses['ner']
+            notImp = 0
+        else:
+            notImp += 1
+            if notImp >= HP['patience']:
+                print(f"No improvement for {notImp} epochs. Early stopping.")
+                break
 
     global modelName
     nlp.to_disk(modelName)
@@ -93,8 +106,7 @@ for p, n in zip(fp, fn):
     text = utils.readFile(p, n)
 
     prod = []
-    desc = []
-    for line in text:
+    for line in text[1 : ]:
         if line != '':
             doc = model(line)
 
@@ -102,12 +114,5 @@ for p, n in zip(fp, fn):
                 if entity.label_ == 'PRODUCT':
                     prod.append(entity.text)
 
-            # 텍스트 분류를 통한 화장품 설명 추출
-            sentences = [sent.text for sent in doc.sents]
-            for sentence in sentences:
-                sentence_doc = model(sentence)
-                if sentence_doc.cats.get('DESCRIPTION', 0) > probability:
-                    desc.append(sentence)
-
-    print('화장품 명:', ' '.join(prod))
-    print('화장품 설명:', ' '.join(desc))
+    print('=======================================================')
+    print('화장품 명:\n', '\n'.join(prod))
