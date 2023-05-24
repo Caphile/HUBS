@@ -1,5 +1,4 @@
 from youtube_transcript_api import YouTubeTranscriptApi
-from nltk.tokenize import sent_tokenize
 from bs4 import BeautifulSoup
 import requests
 import clipboard
@@ -21,7 +20,6 @@ def crawling():
         if url_b != url:
             os.system('cls')
             url_b = url
-            pyperclip.copy('')  # 클립보드 초기화
             try:
                 response = requests.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -85,7 +83,10 @@ def resentense(fp = None, fn = None):
         for line in text[1 : ]:
             if line != '':
                 newText += ' ' + line
-        newText = sent_tokenize(newText)
+
+        pattern = r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s'
+        newText = re.split(pattern, newText)
+
         newText = [text[0]] + newText
         newName = re.sub(r'\d+_', '', n)
 
