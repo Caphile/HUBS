@@ -16,11 +16,12 @@ def crawling():
         #print('유튜브 주소 입력 : ', end = '')
         #url = input()
         url = clipboard.paste()
-        time.sleep(0.5)
+        time.sleep(0.1)
 
         if url_b != url:
             os.system('cls')
             url_b = url
+            pyperclip.copy('')  # 클립보드 초기화
             try:
                 response = requests.get(url)
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -114,5 +115,5 @@ def normalize(fp = None, fn = None):
         print('normalize 완료')
 
 N = utils.Normalize()
-pyperclip.copy('')
+pyperclip.copy('')  # 클립보드 초기화
 crawling()
