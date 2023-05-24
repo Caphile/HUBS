@@ -15,7 +15,8 @@ class Normalize:    # 정규화 함수
 
     def stripSCharacter(self, text):        # 특수문자 제거
         #return re.sub('[^a-zA-Z0-9\s]', '', text)
-        return re.sub('[^a-zA-Z0-9+\s\'&-]', '', text)  # +, -, ', & 기호 살림
+        text = re.sub(r'No\.?\s*\n|\bNo\. ', 'No.', text)
+        return re.sub('[^a-zA-Z0-9+\s\'&.%-]', '', text)
 
     def removeStopword(self, text):         # 불용어 제거
         words = text.split()
@@ -32,7 +33,7 @@ def filePaths(opt = 1):
     if opt == 1:
         fullPaths = filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
     elif opt == 2:
-        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files',('*.csv', '*.xlsx')), ("All files", "*.*")])
+        fullPaths = filedialog.askopenfilenames(title = 'Select Excel File', initialdir = os.getcwd(), filetypes=[('Excel files', ('*.csv', '*.xlsx')), ("All files", "*.*")])
 
     paths, names = [], []
     for p in fullPaths:
