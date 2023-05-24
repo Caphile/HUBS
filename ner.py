@@ -1,4 +1,3 @@
-from tkinter import N
 import spacy
 from spacy.training.example import Example
 import os
@@ -9,9 +8,9 @@ import utils
 modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
-    'dropout'   :   0.3,
-    'minBatch'  :   10,
-    'maxBatch'  :   32,
+    'dropout'   :   0.5,
+    'minBatch'  :   30,
+    'maxBatch'  :   40,
     'learnRate' :   0.01,
     'epochs'    :   75,
     'patience'  :   100
@@ -45,19 +44,13 @@ def setModel():
     from spacy.util import minibatch, compounding
     import random
 
-    ds = []
+    trainData = []
     print('학습용 데이터 읽기')
     fp, fn = utils.filePaths()
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
         for line in text:
-            ds.append(eval(line))
-
-    dataSize = len(ds)
-    splitIdx = int(0.8 * dataSize)
-
-    trainData = ds[ : splitIdx]
-    validationData = ds[splitIdx : ]
+            trainData.append(eval(line))
 
     nlp = spacy.blank('en')
     nlp.add_pipe('sentencizer')
@@ -86,7 +79,7 @@ def setModel():
                 example.append(Example.from_dict(doc, {'entities': tags}))
             nlp.update(example, drop = HP['dropout'], losses = losses)
 
-        print(f"{itn} Losses: {losses['ner']:.3f}")
+        print(f"{itn + 1} Losses: {losses['ner']:.3f}")
 
         if bestLoss > losses['ner']:
             bestLoss = losses['ner']
@@ -96,12 +89,6 @@ def setModel():
             if notImp >= HP['patience']:
                 print(f"No improvement for {notImp} epochs. Early stopping.")
                 break
-
-        '''
-        validation_results = nlp.evaluate(validationData)
-        validation_loss = validation_results['ents_per_type']['']
-        print(f"Validation Loss: {validation_loss:.3f}")
-        '''
 
     global modelName
     nlp.to_disk(modelName)
