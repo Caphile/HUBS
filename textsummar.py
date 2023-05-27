@@ -8,20 +8,6 @@ import os
 
 nltk.download('punkt')
 
-def openFile():
-    root = Tk()
-    root.withdraw()
-
-    return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
-
-def editFile(title, text, lang = 'en'):
-    path = f'scripts/{title}/(su)script_{lang}.txt'
-    with open(path, 'w', encoding = 'UTF-8') as f:
-        for t in text:
-            f.write(t)
-
-filePaths = openFile()
-
 def summarize_text(text, n):
     # 텍스트 전처리: 문장 토큰화, 단어 토큰화, 불용어 제거
     sentences = sent_tokenize(text) #sent_tokenize() 함수는 주어진 텍스트를 문장으로 나누어 리스트 형태로 반환합니다. 각 문장은 텍스트에서 문장 구분 기호(온점, 느낌표, 물음표 등)를 기준으로 분리됩니다.
@@ -48,6 +34,21 @@ def summarize_text(text, n):
     summary = ' '.join(summary_sentences)
     return summary
 
+def openFile():
+    root = Tk()
+    root.withdraw()
+
+    return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
+
+def editFile(title, text, lang = 'en'):
+    path = f'scripts/{title}/(su)script_{lang}.txt'
+    with open(path, 'w', encoding = 'UTF-8') as f:
+        for t in text:
+            f.write(t)
+
+filePaths = openFile()
+
+
 for f in filePaths:
     with open(f, 'r', encoding='utf-8') as f:
         fullText = f.read()
@@ -61,5 +62,7 @@ for line in summary:
     newText = sent_tokenize(text)
 
     editFile(f.name.split('/')[-2], summary)
+    
+#추가적으로 불용어(감탄사 등등)제거 해야할게 있음
     
     
