@@ -16,6 +16,16 @@ def summarize_text(text, n):
     words = [word.lower() for word in words if word.isalnum()]
     words = [word for word in words if word not in stop_words]
 
+    def remove_strings(text, strings_to_remove): #불용어를 제거하기 위한 함수
+        for string in strings_to_remove:
+            text = text.replace(string, "")
+        return text
+    
+    strings_to_remove = ["oh", "music","Music","Hello","Today","Now"] #제거할 불용어를 리스트에 넣어서 사용
+    
+    words = remove_strings(text, strings_to_remove) #불용어가 제거된 문장이 출력 됨
+    
+    
     # 단어의 빈도 계산
     word_freq = defaultdict(int) #defaultdict(int)는 int라는 내장 함수를 기본값으로 사용하는 defaultdict입니다. int는 0으로 초기화되는 기본값을 가지는 함수입니다
     for word in words:
