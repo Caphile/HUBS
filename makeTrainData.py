@@ -8,6 +8,9 @@ def txtLabels():    # 수동 라벨링 데이터
 
         newText = []
         for line in text:
+            if line == '':
+                continue
+
             token = line.split('/')
             sentense = ' '.join(token[0].split())
 
@@ -19,7 +22,12 @@ def txtLabels():    # 수동 라벨링 데이터
                 targets.append(info)
                 #targets.append(' '.join(si[1 : ]))
                 #labels.append(si[0])
-                labels.append('PRODUCT')
+
+                opt = 2
+                if opt == 1:
+                    labels.append('PRODUCT')
+                elif opt == 2:
+                    labels.append('BRAND')
 
             newText.append(standard(sentense, targets, labels))
             if newText[-1] == 'x':
