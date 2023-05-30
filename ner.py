@@ -20,9 +20,7 @@ labels = ['PRODUCT', 'BRAND']
 #probability = 0.5
 #-------------------------------------------------------------------------------------
 
-def extract(fp = None, fn = None):
-    model = loadModel()
-
+def extract(model, fp = None, fn = None):
     if fn == None:    # 테스트용
         print('스크립트 읽기')
         fp, fn = utils.filePaths()
@@ -52,7 +50,6 @@ def extract(fp = None, fn = None):
 
 def loadModel():
     global modelName
-    print('')
 
     try:
         print('커스텀 모델 사용')
