@@ -1,6 +1,5 @@
 import spacy
 from spacy.training.example import Example
-import os
 import utils
 
 #-------------------------------------------------------------------------------------
@@ -21,16 +20,18 @@ labels = ['PRODUCT', 'BRAND']
 #probability = 0.5
 #-------------------------------------------------------------------------------------
 
-def extract(readFile = True, text = None):
-    if readFile == True:
+def extract(forTest = True, text = None):
+    if forTest == True:    # 테스트용
         
+        '''
         print('1. 커스텀 모델 생성')
         print('2. 기존 모델 사용')
         print('====================================')
         print('선택 : ', end = '')
         opt = int(input())
+        '''
 
-        model = loadModel(opt)
+        model = loadModel(2)
 
         print('스크립트 읽기')
         fp, fn = utils.filePaths()
@@ -38,11 +39,15 @@ def extract(readFile = True, text = None):
         # 유튜브 스크립트에서 추출한 텍스트
         for p, n in zip(fp, fn): 
             text = utils.readFile(p, n)
-            byLine(text, model)
+            prods = byLine(text, model)
 
-    elif readFile == False:
+            print('\n=======================================================')
+            print('화장품 명:')
+            print('\n'.join(prods))
+
+    elif forTest == False:
         model = loadModel(2)
-        byLine(text, model)
+        return byLine(text, model)
 
 def byLine(text, model):
     prod = []
@@ -54,12 +59,12 @@ def byLine(text, model):
                 if entity.label_ == 'PRODUCT':
                     prod.append(entity.text)
 
-    print('=======================================================')
-    print('화장품 명:')
-    print('\n'.join(prod))
+    return prod
 
 def loadModel(opt):
     global modelName
+
+    print('')
     if opt == 1:
         setModel()
         model = spacy.load(modelName)
@@ -94,6 +99,7 @@ def setModel():
     notImp = 0
     bestLoss = 10000
 
+    print('학습 시작\n')
     nlp.begin_training()
     for itn in range(HP['epochs']):
         random.shuffle(trainData)
@@ -124,3 +130,7 @@ def setModel():
 
     global modelName
     nlp.to_disk(modelName)
+
+    print('\n모델 저장 완료')
+
+    extract()   # for test
