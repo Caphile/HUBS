@@ -28,7 +28,7 @@ def summarize_text(text, n):
             text = text.replace(string, "")
         return text
     
-    strings_to_remove = ["oh", "music","Music","Hello","Today","Now"] #제거할 불용어를 리스트에 넣어서 사용
+    strings_to_remove = ["oh", "music","Music","Hello","Today","Now","Applause"] #제거할 불용어를 리스트에 넣어서 사용
     
     words = remove_strings(text, strings_to_remove) #불용어가 제거된 문장이 출력 됨
     
@@ -58,7 +58,7 @@ def openFile():
     return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
 
 def editFile(title, text, lang = 'en'):
-    path = f'scripts/{title}/(su)script_{lang}.txt'
+    path = f'scripts/{title}/(summar)script_{lang}.txt'
     with open(path, 'w', encoding = 'UTF-8') as f:
         for t in text:
             f.write(t)
