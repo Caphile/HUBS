@@ -118,7 +118,7 @@ def normalize(fp = None, fn = None):
         utils.saveFile(p, f'2_{newName}', newText)
         print('normalize 완료')
 
-        return newText
+        return (p, f'2_{newName}')
 
 N = utils.Normalize()
 pyperclip.copy('')  # 클립보드 초기화
