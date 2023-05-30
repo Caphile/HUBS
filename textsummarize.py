@@ -16,6 +16,13 @@ def summarize_text(text, n):
     words = [word.lower() for word in words if word.isalnum()]
     words = [word for word in words if word not in stop_words]
 
+    # 품사 태깅
+    tagged_words = nltk.pos_tag(words)
+    interjections = ["UH"]  # 감탄사 품사 태그
+
+    #감탄사만 제거한 문장 
+    words = [word for word, tag in tagged_words if tag not in interjections]
+
     def remove_strings(text, strings_to_remove): #불용어를 제거하기 위한 함수
         for string in strings_to_remove:
             text = text.replace(string, "")
