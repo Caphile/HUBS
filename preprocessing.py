@@ -65,10 +65,10 @@ def crawling(oneTime = False):
                 utils.saveFile(path, f'0_{title}', text)
                 print('crawling 완료')
 
-                target = resentense(path, f'0_{title}')
+                resentense(path, f'0_{title}')
 
                 if oneTime == True:
-                    return target
+                    return (path, title)
 
             except:
                 print("자막이 없는 영상이거나 잘못된 주소\n")
@@ -96,7 +96,7 @@ def resentense(fp = None, fn = None):
         utils.saveFile(p, f'1_{newName}', newText)
         print('resentense 완료')
 
-        return normalize(p, f'1_{newName}')
+        normalize(p, f'1_{newName}')
 
 def normalize(fp = None, fn = None):
     if fp == None or fn == None:
@@ -117,8 +117,6 @@ def normalize(fp = None, fn = None):
         newName = re.sub(r'\d+_', '', n)
         utils.saveFile(p, f'2_{newName}', newText)
         print('normalize 완료')
-
-        return (p, f'2_{newName}')
 
 N = utils.Normalize()
 pyperclip.copy('')  # 클립보드 초기화

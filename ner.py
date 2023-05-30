@@ -20,61 +20,47 @@ labels = ['PRODUCT', 'BRAND']
 #probability = 0.5
 #-------------------------------------------------------------------------------------
 
-def extract(forTest = True, text = None):
-    if forTest == True:    # 테스트용
-        
-        '''
-        print('1. 커스텀 모델 생성')
-        print('2. 기존 모델 사용')
-        print('====================================')
-        print('선택 : ', end = '')
-        opt = int(input())
-        '''
+def extract(fp = None, fn = None):
+    model = loadModel()
 
-        model = loadModel(2)
-
+    if fn == None:    # 테스트용
         print('스크립트 읽기')
         fp, fn = utils.filePaths()
+    else:
+        fp, fn = [fp], [fn]
 
-        # 유튜브 스크립트에서 추출한 텍스트
-        for p, n in zip(fp, fn): 
-            text = utils.readFile(p, n)
-            prods = byLine(text, model)
+    prods = []
+    for p, n in zip(fp, fn): 
+        text = utils.readFile(p, n)
 
-            print('\n=======================================================')
-            print('화장품 명:')
-            print('\n'.join(prods))
+        prod = []
+        for line in text[1 : ]:
+            if line != '':
+                doc = model(line)
 
-    elif forTest == False:
-        model = loadModel(2)
-        return byLine(text, model)
+                for entity in doc.ents:
+                    if entity.label_ == 'PRODUCT':
+                        prod.append(entity.text)
 
-def byLine(text, model):
-    prod = []
-    for line in text[1 : ]:
-        if line != '':
-            doc = model(line)
+        prods.append(prod)
 
-            for entity in doc.ents:
-                if entity.label_ == 'PRODUCT':
-                    prod.append(entity.text)
+        print('\n=======================================================')
+        print('화장품 명:')
+        print('\n'.join(prod))
 
-    return prod
+    return prods
 
-def loadModel(opt):
+def loadModel():
     global modelName
-
     print('')
-    if opt == 1:
-        setModel()
+
+    try:
+        print('커스텀 모델 사용')
         model = spacy.load(modelName)
-    elif opt == 2:
-        try:
-            print('커스텀 모델 사용')
-            model = spacy.load(modelName)
-        except:
-            print('오픈소스로 제공된 모델 사용')
-            model = spacy.load('en_core_web_sm')
+    except:
+        print('오픈소스로 제공된 모델 사용')
+        model = spacy.load('en_core_web_sm')
+
     return model
 
 def setModel():
