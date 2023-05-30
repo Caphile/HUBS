@@ -116,4 +116,4 @@ def setModel():
 
     print('\n모델 저장 완료')
 
-    extract()   # for test
+    extract(nlp)   # for test
