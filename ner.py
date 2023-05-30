@@ -8,26 +8,58 @@ import utils
 modelName = 'ner_model'
 # 하이퍼파라미터
 HP = {
-    'dropout'   :   0.5,
+    'dropout'   :   0.45,
     'minBatch'  :   30,
     'maxBatch'  :   40,
-    'learnRate' :   0.01,
-    'epochs'    :   75,
+    'learnRate' :   0.001,
+    'epochs'    :   100,
     'patience'  :   100
 }
 # 라벨
-labels = ['PRODUCT']
+labels = ['PRODUCT', 'BRAND']
 # 확률(predict)
-probability = 0.5
+#probability = 0.5
 #-------------------------------------------------------------------------------------
 
-def loadModel():
+def extract(readFile = True, text = None):
+    if readFile == True:
+        
+        print('1. 커스텀 모델 생성')
+        print('2. 기존 모델 사용')
+        print('====================================')
+        print('선택 : ', end = '')
+        opt = int(input())
+
+        model = loadModel(opt)
+
+        print('스크립트 읽기')
+        fp, fn = utils.filePaths()
+
+        # 유튜브 스크립트에서 추출한 텍스트
+        for p, n in zip(fp, fn): 
+            text = utils.readFile(p, n)
+            byLine(text, model)
+
+    elif readFile == False:
+        model = loadModel(2)
+        byLine(text, model)
+
+def byLine(text, model):
+    prod = []
+    for line in text[1 : ]:
+        if line != '':
+            doc = model(line)
+
+            for entity in doc.ents:
+                if entity.label_ == 'PRODUCT':
+                    prod.append(entity.text)
+
+    print('=======================================================')
+    print('화장품 명:')
+    print('\n'.join(prod))
+
+def loadModel(opt):
     global modelName
-    print('1. 커스텀 모델 생성')
-    print('2. 기존 모델 사용')
-    print('====================================')
-    print('선택 : ', end = '')
-    opt = int(input())
     if opt == 1:
         setModel()
         model = spacy.load(modelName)
@@ -92,27 +124,3 @@ def setModel():
 
     global modelName
     nlp.to_disk(modelName)
-
-#-------------------------------------------------------------------------------------
-
-os.system('cls')
-model = loadModel()
-print('스크립트 읽기')
-fp, fn = utils.filePaths()
-
-# 유튜브 스크립트에서 추출한 텍스트
-for p, n in zip(fp, fn): 
-    text = utils.readFile(p, n)
-
-    prod = []
-    for line in text[1 : ]:
-        if line != '':
-            doc = model(line)
-
-            for entity in doc.ents:
-                if entity.label_ == 'PRODUCT':
-                    prod.append(entity.text)
-
-    print('=======================================================')
-    print('화장품 명:')
-    print('\n'.join(prod))

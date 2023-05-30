@@ -7,7 +7,7 @@ import time
 import os, re
 import utils
 
-def crawling():
+def crawling(oneTime = False):
     url_b = clipboard.paste()
 
     print("주소를 복사한 순간부터 시작\n")
@@ -65,7 +65,10 @@ def crawling():
                 utils.saveFile(path, f'0_{title}', text)
                 print('crawling 완료')
 
-                resentense(path, f'0_{title}')
+                target = resentense(path, f'0_{title}')
+
+                if oneTime == True:
+                    return target
 
             except:
                 print("자막이 없는 영상이거나 잘못된 주소\n")
@@ -93,7 +96,7 @@ def resentense(fp = None, fn = None):
         utils.saveFile(p, f'1_{newName}', newText)
         print('resentense 완료')
 
-        normalize(p, f'1_{newName}')
+        return normalize(p, f'1_{newName}')
 
 def normalize(fp = None, fn = None):
     if fp == None or fn == None:
@@ -115,6 +118,8 @@ def normalize(fp = None, fn = None):
         utils.saveFile(p, f'2_{newName}', newText)
         print('normalize 완료')
 
+        return newText
+
 N = utils.Normalize()
 pyperclip.copy('')  # 클립보드 초기화
-crawling()
+#crawling()
