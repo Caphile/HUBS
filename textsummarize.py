@@ -16,12 +16,19 @@ def summarize_text(text, n):
     words = [word.lower() for word in words if word.isalnum()]
     words = [word for word in words if word not in stop_words]
 
+    # 품사 태깅
+    tagged_words = nltk.pos_tag(words)
+    interjections = ["UH"]  # 감탄사 품사 태그
+
+    #감탄사만 제거한 문장 
+    words = [word for word, tag in tagged_words if tag not in interjections]
+
     def remove_strings(text, strings_to_remove): #불용어를 제거하기 위한 함수
         for string in strings_to_remove:
             text = text.replace(string, "")
         return text
     
-    strings_to_remove = ["oh", "music"] #제거할 불용어를 리스트에 넣어서 사용
+    strings_to_remove = ["oh", "music","Music","Hello","Today","Now","Applause"] #제거할 불용어를 리스트에 넣어서 사용
     
     words = remove_strings(text, strings_to_remove) #불용어가 제거된 문장이 출력 됨
     
@@ -51,7 +58,7 @@ def openFile():
     return filedialog.askopenfilenames(title = 'Select txt Files', initialdir = os.getcwd(), filetypes = [("Text files", "*.txt"), ("All files", "*.*")])
 
 def editFile(title, text, lang = 'en'):
-    path = f'scripts/{title}/(su)script_{lang}.txt'
+    path = f'scripts/{title}/(summar)script_{lang}.txt'
     with open(path, 'w', encoding = 'UTF-8') as f:
         for t in text:
             f.write(t)
@@ -72,3 +79,4 @@ for line in summary:
     newText = sent_tokenize(text)
 
     editFile(f.name.split('/')[-2], summary)
+    
