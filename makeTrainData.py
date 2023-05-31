@@ -23,7 +23,7 @@ def txtLabels():    # 수동 라벨링 데이터
                 #targets.append(' '.join(si[1 : ]))
                 #labels.append(si[0])
 
-                opt = 2
+                opt = int(n[0])
                 if opt == 1:
                     labels.append('PRODUCT')
                 elif opt == 2:
