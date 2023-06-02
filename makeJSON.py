@@ -1,4 +1,5 @@
 import json
+from msilib import PID_APPNAME
 import utils
 
 import random
