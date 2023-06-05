@@ -53,12 +53,10 @@ class TextSummarizer:
 
 
 # 텍스트 파일 열기
-file_path = "(res) 8.7.txt" 
-with open(file_path, "r",encoding='UTF8') as file:
-    text = file.read() 
+
+texts = "여기다가 서머라이징 할 텍스트 넣기"
 
 n = 1
 
 summarizer = TextSummarizer()
-summary = summarizer.summarize_text(text, n)
-print(summary)
+summary = summarizer.summarize_text(texts, n)
