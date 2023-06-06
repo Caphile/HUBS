@@ -52,11 +52,11 @@ class TextSummarizer:
 
 
 
-# 텍스트 파일 열기
+# 텍스트 파일 열기 <사용법>
 
-texts = "여기다가 서머라이징 할 텍스트 넣기"
+#texts = "여기다가 서머라이징 할 텍스트 넣기"
 
-n = 1
+#n = 1
 
-summarizer = TextSummarizer()
-summary = summarizer.summarize_text(texts, n)
+#summarizer = TextSummarizer()
+#summary = summarizer.summarize_text(texts, n)
