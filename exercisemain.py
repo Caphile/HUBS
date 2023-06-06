@@ -61,7 +61,7 @@ def process():
 
 					summarizer = summarize.TextSummarizer()
 					summary = summarizer.summarize_text(texts, n) #summary 는 서머라이징된 문장 
-					print(summary)
+					
 
 
 
