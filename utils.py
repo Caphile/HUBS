@@ -13,10 +13,11 @@ class Normalize:    # 정규화 함수
         #text = self.lowercase(text)
         return text
 
-    def stripSCharacter(self, text):        # 특수문자 제거
+    def stripSCharacter(self, text, opt = False):        # 특수문자 제거
         #return re.sub('[^a-zA-Z0-9\s]', '', text)
-        text = re.sub(r'No\.?\s*\n|\bNo\. ', 'No.', text)
-        return re.sub('[^a-zA-Z0-9+\s\'&,.%-]', '', text)
+        if opt:
+            text = re.sub(r'No\.?\s*\n|\bNo\. ', 'No.', text)
+        return re.sub('[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9+\s\'&,.%-]', '', text)
 
     def removeStopword(self, text):         # 불용어 제거
         words = text.split()
