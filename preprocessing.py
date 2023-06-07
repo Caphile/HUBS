@@ -1,11 +1,12 @@
 from youtube_transcript_api import YouTubeTranscriptApi
-from bs4 import BeautifulSoup
+import subprocess
 import requests
 import clipboard
 import pyperclip
 import time
 import os, re
 import utils
+import json
 
 def crawling(oneTime = False):
     url_b = clipboard.paste()
@@ -21,21 +22,15 @@ def crawling(oneTime = False):
             os.system('cls')
             url_b = url
             try:
-                response = requests.get(url)
-                soup = BeautifulSoup(response.text, 'html.parser')
+                command = ['yt-dlp', '--dump-json', url]
+                output = subprocess.check_output(command).decode('utf-8')
 
-                title = soup.find("title").text.split("-")[0].strip()
-                for i in ['/', '\\', ':', ',', ';' ,'*', '?' ,'"', '<', '>', '=', '|']:
-                    title = title.replace(i, '')
+                video_info = json.loads(output)
 
-                print('타이틀 : ' + title)
-
-                s = url.find('?v=')
-                e = url.find('&')
-                if not e:
-                    key = url[s + 3 : e]
-                else:
-                    key = url[s + 3 : ]
+                key = video_info['id']
+                title = N.stripSCharacter(video_info['title'])
+                uploader = N.stripSCharacter(video_info['uploader'])
+                upload_date = video_info['upload_date']
 
                 transcript_list = YouTubeTranscriptApi.list_transcripts(key)
  
@@ -57,10 +52,12 @@ def crawling(oneTime = False):
                 if not os.path.exists(path):
                     os.makedirs(path)
 
+                text = [url, title, uploader, upload_date]
                 data = transcript.translate('en').fetch()
-                text = [url]
                 for i in data:
-                    text.append(i['text'])
+                    timeSTP = f"|{int(i['start'])}|"
+                    line = timeSTP + N.stripSCharacter(i['text'], True)
+                    text.append(line)
 
                 utils.saveFile(path, f'0_{title}', text)
                 print('crawling 완료')
@@ -83,14 +80,24 @@ def resentense(fp = None, fn = None):
         text = utils.readFile(p, n)
 
         newText = ''
-        for line in text[1 : ]:
+        for line in text[4 : ]:
             if line != '':
                 newText += ' ' + line
 
-        pattern = r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s'
-        newText = re.split(pattern, newText)
+        pattern_res = r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s'
+        newText = re.split(pattern_res, newText)
 
-        newText = [text[0]] + newText
+        pattern_TS = r'\|\d+\|'
+        matches = []
+        for idx, line in enumerate(newText):
+            matches.append(re.findall(pattern_TS, line))
+            newLine = re.sub(pattern_TS, '', line)
+            if line[0] != '|':
+                newText[idx] = matches[idx - 1][-1] + newLine
+            else:
+                newText[idx] = matches[idx][0] + newLine
+
+        newText = text[ : 4] + newText
         newName = re.sub(r'\d+_', '', n)
 
         utils.saveFile(p, f'1_{newName}', newText)
@@ -107,14 +114,20 @@ def normalize(fp = None, fn = None):
     for p, n in zip(fp, fn): 
         text = utils.readFile(p, n)
 
+        pattern_TS = r'\|\d+\|'
         newText = []
-        for line in text[1 : ]:
-            newLine = N.process(line)
-            if newLine != []:
-                newText.append(newLine)
-        newText = [text[0]] + newText
+        timeSTP = []
+        for idx, line in enumerate(text[4 : ]):
+            timeSTP.append(re.findall(pattern_TS, line)[0])
+            newLine = re.sub(pattern_TS, '', line)
 
+            newLine = N.process(newLine)
+            if newLine != []:
+                newText.append(timeSTP[idx] + newLine)
+
+        newText = text[ : 4] + newText
         newName = re.sub(r'\d+_', '', n)
+
         utils.saveFile(p, f'2_{newName}', newText)
         print('normalize 완료')
 
