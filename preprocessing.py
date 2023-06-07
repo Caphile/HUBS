@@ -21,54 +21,51 @@ def crawling(oneTime = False):
         if url_b != url:
             os.system('cls')
             url_b = url
-            try:
-                command = ['yt-dlp', '--dump-json', url]
-                output = subprocess.check_output(command).decode('utf-8')
+            command = ['yt-dlp', '--dump-json', url]
+            output = subprocess.check_output(command).decode('utf-8')
 
-                video_info = json.loads(output)
+            video_info = json.loads(output)
 
-                key = video_info['id']
-                title = N.stripSCharacter(video_info['title'])
-                uploader = N.stripSCharacter(video_info['uploader'])
-                upload_date = video_info['upload_date']
+            key = video_info['id']
+            title = N.stripSCharacter(video_info['title'])
+            uploader = N.stripSCharacter(video_info['uploader'])
+            upload_date = video_info['upload_date']
 
-                transcript_list = YouTubeTranscriptApi.list_transcripts(key)
+            transcript_list = YouTubeTranscriptApi.list_transcripts(key)
  
-                for transcript in transcript_list:
-                    '''
-                    print(
-                        transcript.video_id,
-                        transcript.language,
-                        transcript.language_code,
+            for transcript in transcript_list:
+                '''
+                print(
+                    transcript.video_id,
+                    transcript.language,
+                    transcript.language_code,
        
-                        transcript.is_generated,
+                    transcript.is_generated,
          
-                        transcript.is_translatable,
+                    transcript.is_translatable,
          
-                        transcript.translation_languages,
-                    )
-                        '''
-                path = f'{os.getcwd()}/scripts'
-                if not os.path.exists(path):
-                    os.makedirs(path)
+                    transcript.translation_languages,
+                )
+                    '''
+            path = f'{os.getcwd()}/scripts'
+            if not os.path.exists(path):
+                os.makedirs(path)
 
-                text = [url, title, uploader, upload_date]
-                data = transcript.translate('en').fetch()
-                for i in data:
-                    timeSTP = f"|{int(i['start'])}|"
-                    line = timeSTP + N.stripSCharacter(i['text'], True)
-                    text.append(line)
+            text = [url, title, uploader, upload_date]
+            data = transcript.translate('en').fetch()
+            for i in data:
+                timeSTP = f"|{int(i['start'])}|"
+                line = timeSTP + N.stripSCharacter(i['text'], True)
+                text.append(line)
 
-                utils.saveFile(path, f'0_{title}', text)
-                print('crawling 완료')
+            utils.saveFile(path, f'0_{title}', text)
+            print('crawling 완료')
 
-                resentense(path, f'0_{title}')
+            resentense(path, f'0_{title}')
 
-                if oneTime == True:
-                    return (path, title)
+            if oneTime == True:
+                return (path, title)
 
-            except:
-                print("자막이 없는 영상이거나 잘못된 주소\n")
 
 def resentense(fp = None, fn = None):
     if fp == None or fn == None:
@@ -92,10 +89,13 @@ def resentense(fp = None, fn = None):
         for idx, line in enumerate(newText):
             matches.append(re.findall(pattern_TS, line))
             newLine = re.sub(pattern_TS, '', line)
-            if line[0] != '|':
-                newText[idx] = matches[idx - 1][-1] + newLine
-            else:
+            if line[0] == '|':
                 newText[idx] = matches[idx][0] + newLine
+            else:
+                now = idx - 1
+                while len(matches[now]) == 0:
+                    now -= 1
+                newText[idx] = matches[now][-1] + newLine
 
         newText = text[ : 4] + newText
         newName = re.sub(r'\d+_', '', n)
