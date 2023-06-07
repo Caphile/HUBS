@@ -133,4 +133,4 @@ def normalize(fp = None, fn = None):
 
 N = utils.Normalize()
 pyperclip.copy('')  # 클립보드 초기화
-#crawling()
+crawling()
