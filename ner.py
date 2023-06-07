@@ -33,20 +33,18 @@ def extract(model, fp = None, fn = None):
         text = utils.readFile(p, n)
 
         pattern_TS = r'\|\d+\|'
-        prod = []
+        prods = []
         for line in text[4 : ]:
             if line != '':
                 newLine = re.sub(pattern_TS, '', line)
                 doc = model(newLine)
                 for entity in doc.ents:
                     if entity.label_ == 'PRODUCT':
-                        prod.append(entity.text)
-
-        prods.append(prod)
+                        prods.append(entity.text)
 
         print('\n=======================================================')
         print('화장품 명:')
-        print('\n'.join(prod))
+        print('\n'.join(prods))
 
     return prods
 

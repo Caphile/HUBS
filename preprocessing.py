@@ -52,20 +52,23 @@ def crawling(oneTime = False):
                 os.makedirs(path)
 
             text = [url, title, uploader, upload_date]
-            data = transcript.translate('en').fetch()
-            for i in data:
-                timeSTP = f"|{int(i['start'])}|"
-                line = timeSTP + N.stripSCharacter(i['text'], True)
-                text.append(line)
+            try:
+                data = transcript.translate('en').fetch()
+                for i in data:
+                    timeSTP = f"|{int(i['start'])}|"
+                    line = timeSTP + N.stripSCharacter(i['text'], True)
+                    text.append(line)
 
-            utils.saveFile(path, f'0_{title}', text)
-            print('crawling 완료')
+                utils.saveFile(path, f'0_{title}', text)
+                print('crawling 완료')
+            except:
+                print('자막이 없는 영상')
+                continue
 
             resentense(path, f'0_{title}')
 
             if oneTime == True:
                 return (path, title)
-
 
 def resentense(fp = None, fn = None):
     if fp == None or fn == None:
