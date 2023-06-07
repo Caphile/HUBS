@@ -21,26 +21,32 @@ labels = ['PRODUCT', 'BRAND']
 #probability = 0.5
 #-------------------------------------------------------------------------------------
 
-def extract(model, text = None):
-    if text == None:    # 테스트용
+def extract(model, fp = None, fn = None):
+    if fn == None:    # 테스트용
         print('스크립트 읽기')
         fp, fn = utils.filePaths()
-        for p, n in zip(fp, fn): 
-            text = utils.readFile(p, n)
+    else:
+        fp, fn = [fp], [fn]
 
-    pattern_TS = r'\|\d+\|'
     prods = []
-    for line in text:
-        if line != '':
-            newLine = re.sub(pattern_TS, '', line)
-            doc = model(newLine)
-            for entity in doc.ents:
-                if entity.label_ == 'PRODUCT':
-                    prods.append(entity.text)
+    for p, n in zip(fp, fn): 
+        text = utils.readFile(p, n)
 
-    print('\n=======================================================')
-    print('화장품 명:')
-    print('\n'.join(prods))
+        pattern_TS = r'\|\d+\|'
+        prod = []
+        for line in text[4 : ]:
+            if line != '':
+                newLine = re.sub(pattern_TS, '', line)
+                doc = model(newLine)
+                for entity in doc.ents:
+                    if entity.label_ == 'PRODUCT':
+                        prod.append(entity.text)
+
+        prods.append(prod)
+
+        print('\n=======================================================')
+        print('화장품 명:')
+        print('\n'.join(prod))
 
     return prods
 
